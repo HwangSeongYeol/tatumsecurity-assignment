@@ -1,25 +1,15 @@
+// router/index.tsx
 import { createBrowserRouter, type RouteObject } from "react-router-dom";
-import AppLayout from "../layouts/AppLayout";
-import HomePage from "../pages/HomePage";
-import CloudManagementPage from "../pages/CloudManagementPage";
+import { appRoutes, type AppRoute } from "./config";
 
-const routeObjectList: RouteObject[] = [
-  {
-    path: "/",
-    element: <AppLayout />,
-    children: [
-      {
-        path: "/",
-        element: <HomePage />,
-      },
-      {
-        path: "cloud-management",
-        element: <CloudManagementPage />,
-      },
-    ],
-  },
-];
+// AppRoute -> RouteObject 변환
+function toRouteObjects(nodes: AppRoute[]): RouteObject[] {
+  return nodes.map((node) => ({
+    path: node.path,
+    element: node.element,
+    children: node.children ? toRouteObjects(node.children) : undefined,
+  }));
+}
 
-const router = createBrowserRouter(routeObjectList);
-
+const router = createBrowserRouter(toRouteObjects(appRoutes));
 export default router;
